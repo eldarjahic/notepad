@@ -1,0 +1,12 @@
+{
+    "name": "user/notepad",
+    "authors": [
+        {
+            "name": "eldarjahic",
+            "email": "eldarjahic.00@hotmail.com"
+        }
+    ],
+    "require": {
+        "mikecao/flight": "^2.0"
+    }
+}
