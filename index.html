@@ -77,8 +77,12 @@
   });
 
     function showModal(id){
-      $("#exampleModal .modal-body").html(id);
-      $("#exampleModal").modal("show");
+      $.get('rest/notes/'+id,function(data){
+        //$("#exampleModal .modal-body").html(id);
+        $("#description").val(data.description);
+        $("#exampleModal").modal("show");
+      })
+
 
     }
 </script>
@@ -93,7 +97,7 @@
         </button>
       </div>
       <div class="modal-body">
-        ...
+        <input id = "description" type = "text"/>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
