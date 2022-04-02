@@ -53,37 +53,69 @@
   <script src = "js/jquery-3.6.0.min.js"></script>
   <script src = "js/bootstrap.bundle.min.js"></script>
   <script>
-    //ajax get request from api
-  $.get( "rest/notes", function( data ) {
-    $("#note-list").html("");
-    var html = "" ;
+   getNotes();
 
-    for(let i = 0; i < data.length; i++){
-      html += `
-      <div class="col-lg-4">
-        <h2> `+ data[i].created + `</h2>
-        <p>`+ data[i].description + `</p>
-        <p>
-          <button type="button" class="btn btn-primary" onclick="showModal(`+ data[i].id+ `)" >
-           Launch demo modal
-          </button>
-         </p>
-      </div> `;
 
-    }
-    $("#note-list").html(html);
-    console.log(data);
+  function getNotes(){
+    $.get( "rest/notes", function( data ) {
+      $("#note-list").html("");
+      var html = "" ;
 
-  });
+      for(let i = 0; i < data.length; i++){
+        html += `
+        <div class="col-lg-4">
+          <h2> `+ data[i].created + `</h2>
+          <p>`+ data[i].description + `</p>
+          <p>
+            <button type="button" class="btn btn-primary note-button" onclick="showModal(`+ data[i].id+ `)" >
+             Launch demo modal
+            </button>
+           </p>
+        </div> `;
+
+      }
+      $("#note-list").html(html);
+      console.log(data);
+
+    });
+
+  }
 
     function showModal(id){
+      $('.note-button').attr('disabled', true);
       $.get('rest/notes/'+id,function(data){
         //$("#exampleModal .modal-body").html(id);
         $("#description").val(data.description);
+        $("#id").val(data.id);
+        $("#created").val(data.created);
         $("#exampleModal").modal("show");
+        $('.note-button').attr('disabled', false);
       })
 
 
+    }
+    function saveNotes(){
+      $('.save-note-button').attr('disabled', true);
+      var note =  {}
+      //note.id = $('#id').val();
+      note.description = $('#description').val();
+      note.created = $('#created').val();
+      $.ajax({
+      url: 'rest/notes/' + $('#id').val(),
+      type: 'PUT',
+      data: JSON.stringify(note),
+      contentType: "application/json",
+      dataType: "json",
+      success: function(result) {
+          $("#exampleModal").modal("hide");
+          $('.save-note-button').attr('disabled', false);
+          $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
+
+          getNotes();
+      }
+    });
+     alert("Changes saved");
+     console.log(note);
     }
 </script>
    <!-- Modal -->
@@ -97,11 +129,13 @@
         </button>
       </div>
       <div class="modal-body">
+        <input id = "id" type = "hidden"/>
         <input id = "description" type = "text"/>
+        <input id = "created" type = "hidden"/>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary save-note-button" onclick="saveNotes()">Save changes</button>
       </div>
     </div>
   </div>
