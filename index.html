@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <title>Note app</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link href="css/style.css" rel="stylesheet">
+
+
   </head>
   <body>
     <header>
@@ -38,7 +42,7 @@
   <div class="container marketing" style = "margin-top:100px;">
    <div class ="row">
    <div>
-       <button class="btn btn-success btn-lg " data-bs-toggle="modal" data-bs-target="#addNoteModal"> + </button>
+       <button class="btn btn-success btn-lg " data-bs-toggle="modal" data-bs-target="#addNoteModal"><i class="bi bi-plus" id="plus-icon"></i></button>
    </div>
   </div>
 
@@ -102,7 +106,6 @@
     function saveNotes(){
       $('.save-note-button').attr('disabled', true);
       var note =  {}
-      //note.id = $('#id').val();
       note.description = $('#description').val();
       note.created = $('#created').val();
       $.ajax({
@@ -122,26 +125,50 @@
      alert("Changes saved");
      console.log(note);
     }
+    function addNotes(){
+      console.log("Save Note");
+      var note =  {}
+      note.description = $('#add_description').val();
+      note.created = $('#add_created').val();
+      $.ajax({
+      url: 'rest/notes/' ,
+      type: 'POST',
+      data: JSON.stringify(note),
+      contentType: "application/json",
+      dataType: "json",
+      success: function(result) {
+          $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
+          getNotes();
+          console.log(result);
+          $("#addNoteModal").modal("hide");
+      }
+    });
+     alert("Note added!");
+     console.log(note);
+
+    }
 </script>
    <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <input id = "id" type = "hidden"/>
-        <input id = "description" type = "text"/>
-        <input id = "created" type = "hidden"/>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary save-note-button" onclick="saveNotes()">Save changes</button>
-      </div>
+        <form id="editForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <input id = "id" type = "hidden"/>
+            <div class="form-group">  <input id = "description" class="form-control" type = "text"/>  </div>
+            <input id = "created" type = "hidden"/>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary save-note-button" onclick="saveNotes()">Save changes</button>
+          </div>
+        </form>
     </div>
   </div>
 </div>
@@ -157,9 +184,8 @@
         </button>
       </div>
       <div class="modal-body">
-        <input id = "id" type = "hidden"/>
-        <input id = "description" type = "text"/>
-        <input id = "created" type = "hidden"/>
+        <input id = "add_description" type = "text"/>
+        <input id = "add_created" type = "date"/>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
