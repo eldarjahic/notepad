@@ -66,6 +66,7 @@
   <script src = "js/jquery-3.6.0.min.js"></script>
   <script src = "js/bootstrap.bundle.min.js"></script>
   <script src = "js/jquery.validate.min.js"></script>
+  <script src = "js/note-servise.js"></script>
 
    <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -85,7 +86,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary save-note-button" onclick="saveNotes()">Save changes</button>
+            <button type="button" class="btn btn-primary save-note-button" onclick="NoteService.update()">Save changes</button>
           </div>
         </form>
     </div>
@@ -94,7 +95,7 @@
 
 <!-- Add-Modal -->
 <div class="modal fade" id="addNoteModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog">
     <div class="modal-content">
       <form id="addNoteForm">
       <div class="modal-header">
@@ -127,131 +128,9 @@
 
 <script>
 
-
- $('#addNoteForm').validate({
-  submitHandler: function(form) {
-
-      var note = Object.fromEntries((new FormData(form)).entries());
-      $.ajax({
-      url: 'rest/notes/' ,
-      type: 'POST',
-      data: JSON.stringify(note),
-      contentType: "application/json",
-      dataType: "json",
-      success: function(result) {
-          $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
-          getNotes();
-          console.log(result);
-          $("#addNoteModal").modal("hide");
-      }
-    });
-
-    }
- });
- //ajax get request from API
- getNotes();
+  NoteService.init();
 
 
-function getNotes(){
-  $.get( "rest/notes", function( data ) {
-    $("#note-list").html("");
-    var html = "" ;
-
-    for(let i = 0; i < data.length; i++){
-      html += `
-      <div class="col-lg-4">
-        <h2> `+ data[i].description + `</h2>
-        <p>`+ data[i].created + `</p>
-        <p>
-
-          <div class="btn-group" role="group" >
-            <button type="button" class="btn btn-primary note-button" onclick="showModal(`+ data[i].id+ `)">Edit</button>
-            <button type="button" class="btn btn-danger"onclick="deleteNote(`+ data[i].id+ `)">Delete</button>
-
-          </div>
-         </p>
-      </div> `;
-
-    }
-    $("#note-list").html(html);
-    console.log(data);
-
-  });
-
-}
-
-  function showModal(id){
-    $('.note-button').attr('disabled', true);
-    $.get('rest/notes/'+id,function(data){
-      //$("#exampleModal .modal-body").html(id);
-      $("#description").val(data.description);
-      $("#id").val(data.id);
-      $("#created").val(data.created);
-      $("#exampleModal").modal("show");
-      $('.note-button').attr('disabled', false);
-    })
-
-
-  }
-  function saveNotes(){
-    $('.save-note-button').attr('disabled', true);
-    var note =  {}
-    note.description = $('#description').val();
-    note.created = $('#created').val();
-    $.ajax({
-    url: 'rest/notes/' + $('#id').val(),
-    type: 'PUT',
-    data: JSON.stringify(note),
-    contentType: "application/json",
-    dataType: "json",
-    success: function(result) {
-        $("#exampleModal").modal("hide");
-        $('.save-note-button').attr('disabled', false);
-        $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
-        getNotes();
-        console.log(result);
-    }
-  });
-   alert("Changes saved");
-   console.log(note);
-
- }
- function deleteNote(id){
-   $('.save-note-button').attr('disabled', true);
-   $.ajax({
-   url: 'rest/notes/' + id,
-   type: 'DELETE',
-   success: function(result) {
-       $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
-       getNotes();
-
-   }
- });
- }
- /*
-  function addNotes(){
-    console.log("Save Note");
-    var note =  {}
-    note.description = $('#add_description').val();
-    note.created = $('#add_created').val();
-    $.ajax({
-    url: 'rest/notes/' ,
-    type: 'POST',
-    data: JSON.stringify(note),
-    contentType: "application/json",
-    dataType: "json",
-    success: function(result) {
-        $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
-        getNotes();
-        console.log(result);
-        $("#addNoteModal").modal("hide");
-    }
-  });
-   alert("Note added!");
-   console.log(note);
-
-
- }*/
 </script>
 
 </html>
