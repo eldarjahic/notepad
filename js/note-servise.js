@@ -18,18 +18,19 @@ var NoteService = {
 
         for(let i = 0; i < data.length; i++){
           html += `
-          <div class="col-lg-4">
-            <h2> `+ data[i].description + `</h2>
-            <p>`+ data[i].created + `</p>
-            <p>
-
-              <div class="btn-group" role="group" >
+          <div class="col-lg-3">
+            <div class="card" style="width: 18rem;">
+              <img class="card-img-top"  alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">`+ data[i].description + `</h5>
+                <p class="card-text">`+ data[i].created + `:Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                 <button type="button" class="btn btn-primary note-button" onclick="NoteService.get(`+ data[i].id+ `)">Edit</button>
                 <button type="button" class="btn btn-danger"onclick="NoteService.delete(`+ data[i].id+ `)">Delete</button>
-
               </div>
-             </p>
-          </div> `;
+             </div>
+            </div>
+          </div>
+          `;
 
         }
         $("#note-list").html(html);
