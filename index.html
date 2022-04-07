@@ -6,7 +6,11 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link href="css/style.css" rel="stylesheet">
-
+    <style>
+    .error{
+      color: red
+    }
+    </style>
 
   </head>
   <body>
@@ -61,93 +65,8 @@
 
   <script src = "js/jquery-3.6.0.min.js"></script>
   <script src = "js/bootstrap.bundle.min.js"></script>
-  <script>
-   getNotes();
+  <script src = "js/jquery.validate.min.js"></script>
 
-
-  function getNotes(){
-    $.get( "rest/notes", function( data ) {
-      $("#note-list").html("");
-      var html = "" ;
-
-      for(let i = 0; i < data.length; i++){
-        html += `
-        <div class="col-lg-4">
-          <h2> `+ data[i].created + `</h2>
-          <p>`+ data[i].description + `</p>
-          <p>
-            <button type="button" class="btn btn-primary note-button" onclick="showModal(`+ data[i].id+ `)" >
-             Launch demo modal
-            </button>
-           </p>
-        </div> `;
-
-      }
-      $("#note-list").html(html);
-      console.log(data);
-
-    });
-
-  }
-
-    function showModal(id){
-      $('.note-button').attr('disabled', true);
-      $.get('rest/notes/'+id,function(data){
-        //$("#exampleModal .modal-body").html(id);
-        $("#description").val(data.description);
-        $("#id").val(data.id);
-        $("#created").val(data.created);
-        $("#exampleModal").modal("show");
-        $('.note-button').attr('disabled', false);
-      })
-
-
-    }
-    function saveNotes(){
-      $('.save-note-button').attr('disabled', true);
-      var note =  {}
-      note.description = $('#description').val();
-      note.created = $('#created').val();
-      $.ajax({
-      url: 'rest/notes/' + $('#id').val(),
-      type: 'PUT',
-      data: JSON.stringify(note),
-      contentType: "application/json",
-      dataType: "json",
-      success: function(result) {
-          $("#exampleModal").modal("hide");
-          $('.save-note-button').attr('disabled', false);
-          $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
-          getNotes();
-          console.log(result);
-      }
-    });
-     alert("Changes saved");
-     console.log(note);
-    }
-    function addNotes(){
-      console.log("Save Note");
-      var note =  {}
-      note.description = $('#add_description').val();
-      note.created = $('#add_created').val();
-      $.ajax({
-      url: 'rest/notes/' ,
-      type: 'POST',
-      data: JSON.stringify(note),
-      contentType: "application/json",
-      dataType: "json",
-      success: function(result) {
-          $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
-          getNotes();
-          console.log(result);
-          $("#addNoteModal").modal("hide");
-      }
-    });
-     alert("Note added!");
-     console.log(note);
-
-    }
-</script>
    <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -177,22 +96,162 @@
 <div class="modal fade" id="addNoteModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
+      <form id="addNoteForm">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Add Note</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <input id = "add_description" type = "text"/>
-        <input id = "add_created" type = "date"/>
+
+       <!-- bootstrap form -->
+
+          <div class="form-group">
+            <label>Description</label>
+            <input name="description" type="text" class="form-control required"  placeholder="Enter note">
+          </div>
+          <div class="form-group">
+            <label>Created</label>
+            <input name="created" type="date" class="form-control required" placeholder="Created date">
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary save-note-button" onclick="addNotes()">Save changes</button>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+
       </div>
+    </form>
     </div>
   </div>
 </div>
+
+<script>
+
+
+ $('#addNoteForm').validate({
+  submitHandler: function(form) {
+
+      var note = Object.fromEntries((new FormData(form)).entries());
+      $.ajax({
+      url: 'rest/notes/' ,
+      type: 'POST',
+      data: JSON.stringify(note),
+      contentType: "application/json",
+      dataType: "json",
+      success: function(result) {
+          $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
+          getNotes();
+          console.log(result);
+          $("#addNoteModal").modal("hide");
+      }
+    });
+
+    }
+ });
+ //ajax get request from API
+ getNotes();
+
+
+function getNotes(){
+  $.get( "rest/notes", function( data ) {
+    $("#note-list").html("");
+    var html = "" ;
+
+    for(let i = 0; i < data.length; i++){
+      html += `
+      <div class="col-lg-4">
+        <h2> `+ data[i].description + `</h2>
+        <p>`+ data[i].created + `</p>
+        <p>
+
+          <div class="btn-group" role="group" >
+            <button type="button" class="btn btn-primary note-button" onclick="showModal(`+ data[i].id+ `)">Edit</button>
+            <button type="button" class="btn btn-danger"onclick="deleteNote(`+ data[i].id+ `)">Delete</button>
+
+          </div>
+         </p>
+      </div> `;
+
+    }
+    $("#note-list").html(html);
+    console.log(data);
+
+  });
+
+}
+
+  function showModal(id){
+    $('.note-button').attr('disabled', true);
+    $.get('rest/notes/'+id,function(data){
+      //$("#exampleModal .modal-body").html(id);
+      $("#description").val(data.description);
+      $("#id").val(data.id);
+      $("#created").val(data.created);
+      $("#exampleModal").modal("show");
+      $('.note-button').attr('disabled', false);
+    })
+
+
+  }
+  function saveNotes(){
+    $('.save-note-button').attr('disabled', true);
+    var note =  {}
+    note.description = $('#description').val();
+    note.created = $('#created').val();
+    $.ajax({
+    url: 'rest/notes/' + $('#id').val(),
+    type: 'PUT',
+    data: JSON.stringify(note),
+    contentType: "application/json",
+    dataType: "json",
+    success: function(result) {
+        $("#exampleModal").modal("hide");
+        $('.save-note-button').attr('disabled', false);
+        $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
+        getNotes();
+        console.log(result);
+    }
+  });
+   alert("Changes saved");
+   console.log(note);
+
+ }
+ function deleteNote(id){
+   $('.save-note-button').attr('disabled', true);
+   $.ajax({
+   url: 'rest/notes/' + id,
+   type: 'DELETE',
+   success: function(result) {
+       $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
+       getNotes();
+
+   }
+ });
+ }
+ /*
+  function addNotes(){
+    console.log("Save Note");
+    var note =  {}
+    note.description = $('#add_description').val();
+    note.created = $('#add_created').val();
+    $.ajax({
+    url: 'rest/notes/' ,
+    type: 'POST',
+    data: JSON.stringify(note),
+    contentType: "application/json",
+    dataType: "json",
+    success: function(result) {
+        $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
+        getNotes();
+        console.log(result);
+        $("#addNoteModal").modal("hide");
+    }
+  });
+   alert("Note added!");
+   console.log(note);
+
+
+ }*/
+</script>
 
 </html>
