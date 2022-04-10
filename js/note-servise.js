@@ -18,12 +18,13 @@ var NoteService = {
 
         for(let i = 0; i < data.length; i++){
           html += `
-          <div class="col-lg-3">
-            <div class="card" style="width: 18rem;">
-              <img class="card-img-top"  alt="Card image cap">
+          <div class="col-lg-3 mgb-2">
+            <div class="card">
               <div class="card-body">
                 <h5 class="card-title">`+ data[i].description + `</h5>
-                <p class="card-text">`+ data[i].created + `:Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <p class="card-text">`+ data[i].created + `</p>
+                <p class="card-text">`+ data[i].content + `</p>
+
                 <button type="button" class="btn btn-primary note-button" onclick="NoteService.get(`+ data[i].id+ `)">Edit</button>
                 <button type="button" class="btn btn-danger"onclick="NoteService.delete(`+ data[i].id+ `)">Delete</button>
               </div>
@@ -42,9 +43,11 @@ var NoteService = {
   get: function(id){
       $('.note-button').attr('disabled', true);
       $.get('rest/notes/'+id,function(data){
+        console.log(data);
         $("#description").val(data.description);
         $("#id").val(data.id);
         $("#created").val(data.created);
+        $("#content").val(data.content);
         $("#exampleModal").modal("show");
         $('.note-button').attr('disabled', false);
       })
@@ -72,6 +75,7 @@ var NoteService = {
         var note =  {}
         note.description = $('#description').val();
         note.created = $('#created').val();
+        note.content =  $('#content').val();
         $.ajax({
         url: 'rest/notes/' + $('#id').val(),
         type: 'PUT',

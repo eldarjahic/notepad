@@ -7,9 +7,12 @@ $op = $_REQUEST['op'];
 
 switch ($op) {
   case 'insert':
+    print_r("baaa");
+    die;
     $description = $_REQUEST['description'];
     $created = $_REQUEST['created'];
-    $dao->add($description, $created);
+    $content = $_REQUEST['content'];
+    $dao->add($description, $created, $content);
     break;
 
   case 'delete':

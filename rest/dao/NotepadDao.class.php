@@ -30,7 +30,9 @@ public function get_by_id($id){
 }
 
 public function add($pad){
-  $stmt = $this->conn->prepare("INSERT INTO webprog.webprog (description, created) VALUES (:description, :created)");
+  print_r($pad);
+
+  $stmt = $this->conn->prepare("INSERT INTO webprog.webprog (description, created,content) VALUES (:description, :created, :content)");
   //$stmt->execute(['description' => $description,'created' => $created ]); //another way to prevent sql in
   $stmt->execute($pad);
 }
@@ -41,7 +43,7 @@ public function delete($id){
 
 }
 public function update($pad){
-  $stmt = $this->conn->prepare("UPDATE webprog.webprog SET description= :description, created= :created  WHERE id= :id");
+  $stmt = $this->conn->prepare("UPDATE webprog.webprog SET description= :description, created= :created, content= :content  WHERE id= :id");
   $stmt->execute($pad);
   return $pad;
 }

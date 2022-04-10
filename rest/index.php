@@ -17,7 +17,9 @@ Flight::route('GET /notes/@id', function($id){
 });
 
 Flight::route('POST /notes', function(){
-  Flight::json (Flight::notepadDao()->add(Flight::request()->data->getData()));
+  $data = Flight::request()->data->getData();
+  print_r($data);
+  Flight::json (Flight::notepadDao()->add($data));
 });
 
 Flight::route('PUT /notes/@id', function($id){
