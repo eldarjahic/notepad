@@ -65,6 +65,9 @@ var NoteService = {
             $("#note-list").html('<div class="spinner-border text-primary" role="status"> <span class="sr-only"></span>  </div>');
             NoteService.list();
             $("#addNoteModal").modal("hide");
+            $('#add_content').val("");
+            $('#add_description').val("");
+            $('#add_created').val("");
         }
       });
 
