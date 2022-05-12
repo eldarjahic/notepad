@@ -2,16 +2,18 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require_once '../vendor/autoload.php';
-require_once 'dao/NoteDao.class.php';
-
-
-require_once 'services/NoteService.php';
+require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ .'/dao/UserDao.class.php';
+require_once __DIR__ .'/services/NoteService.php';
 
 Flight::register('noteService', 'NoteService');
+Flight::register('userDao', 'UserDao');
+
+
 
 
 require_once 'routes/NoteRoutes.php';
+require_once 'routes/UserRoutes.php';
 
 Flight::start();
 

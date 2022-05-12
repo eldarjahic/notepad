@@ -1,4 +1,5 @@
 <?php
+
 Flight::route('GET /notes', function(){
   Flight::json(Flight::noteService()->get_all());
 
@@ -16,8 +17,7 @@ Flight::route('POST /notes', function(){
 
 Flight::route('PUT /notes/@id', function($id){
   $data = Flight::request()->data->getData();
-  $data['id'] = $id;
-  Flight::json(Flight::noteService()->update($data));
+  Flight::json(Flight::noteService()->update($id, $data));
 
 
 });
