@@ -12,29 +12,41 @@ var NoteService = {
   },
 
   list: function() {
-    $.get("rest/notes", function(data) {
-      $("#note-list").html("");
-      var html = "";
 
-      for (let i = 0; i < data.length; i++) {
-        html += `
-          <div class="col-lg-3 mgb-2">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">` + data[i].description + `</h5>
-                <p class="card-text">` + data[i].created + `</p>
-                <p class="card-text">` + data[i].content + `</p>
+    $.ajax({
+         url: "rest/notes",
+         type: "GET",
+         beforeSend: function(xhr){
+           xhr.setRequestHeader('Authorization', localStorage.getItem('token'));
+         },
+         success: function(data) {
+           $("#note-list").html("");
+           var html = "";
 
-                <button type="button" class="btn btn-primary note-button" onclick="NoteService.get(` + data[i].id + `)">Edit</button>
-                <button type="button" class="btn btn-danger"onclick="NoteService.delete(` + data[i].id + `)">Delete</button>
-              </div>
-             </div>
-            </div>
-          </div>
-          `;
+           for (let i = 0; i < data.length; i++) {
+             html += `
+               <div class="col-lg-3 mgb-2">
+                 <div class="card">
+                   <div class="card-body">
+                     <h5 class="card-title">` + data[i].description + `</h5>
+                     <p class="card-text">` + data[i].created + `</p>
+                     <p class="card-text">` + data[i].content + `</p>
 
-      }
-      $("#note-list").html(html);
+                     <button type="button" class="btn btn-primary note-button" onclick="NoteService.get(` + data[i].id + `)">Edit</button>
+                     <button type="button" class="btn btn-danger"onclick="NoteService.delete(` + data[i].id + `)">Delete</button>
+                   </div>
+                  </div>
+                 </div>
+               </div>
+               `;
+
+           }
+           $("#note-list").html(html);
+         }
+    
+
+
+
 
     });
 
