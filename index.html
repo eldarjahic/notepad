@@ -36,7 +36,7 @@
         </ul>
         <form class="d-flex">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+          <button class="btn btn-outline-success" type="button" onclick="UserService.logout()">Logout</button>
         </form>
       </div>
     </div>
@@ -62,7 +62,8 @@
   <script src = "js/jquery-3.6.0.min.js"></script>
   <script src = "js/bootstrap.bundle.min.js"></script>
   <script src = "js/jquery.validate.min.js"></script>
-  <script src = "js/note-servise.js"></script>
+  <script src = "js/note-service.js"></script>
+  <script src = "js/user-service.js"></script>
 
    <!-- Edit-Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -135,6 +136,13 @@
 </div>
 
 <script>
+
+  var token = localStorage.getItem("token");
+  if (token){
+      NoteService.init();
+  }else{
+    window.location.replace("login.html");
+  }
 
   NoteService.init();
 

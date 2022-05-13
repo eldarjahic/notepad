@@ -8,10 +8,17 @@ Flight::route('POST /login', function(){
 
   $user = Flight::userDao()->get_user_by_email($login ["email"]);
   if(isset($user["id"])){
-    $jwt = JWT::encode($user, Config::JWT_SECRET(), 'HS256');
-    Flight::json (["token" => $jwt]);
+    if($user['password'] == md5 ($login['password'])){
+      unset ($user['password']);
+
+      $jwt = JWT::encode($user, Config::JWT_SECRET(), 'HS256');
+      Flight::json(['token' => $jwt]);
+    }else{
+      Flight::json(["message" => "Wrong password"], 404);
+    }
+
   }else{
-    Flight::json (["massage" => "User dosent exist"], 404);
+    Flight::json (["message" => "User dosent exist"], 404);
 
   }
 

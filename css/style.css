@@ -1,27 +1,35 @@
-#plus-icon{
-  color: white;
 
-}
-.btn-success{
-  background-color: #138D75;
-  margin-bottom: 20px;
-}
-.btn-success:hover {
-  background-color: #117A65;
-}
-.mgb-2{
-  margin-bottom: 20px;
-}
+  #plus-icon{
+    color: white;
 
-.right-align {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  z-index: 100;
-}
-.error{
-  color: red;
-}
-.title{
-  font-weight: bold;
-}
+  }
+  .btn-success{
+    background-color: #138D75;
+    margin-bottom: 20px;
+  }
+  .btn-success:hover {
+    background-color: #117A65;
+  }
+  .mgb-2{
+    margin-bottom: 20px;
+  }
+
+  .right-align {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 100;
+  }
+  .error{
+    color: red;
+  }
+  .title{
+    font-weight: bold;
+  }
+  .image {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 2px;
+    width: 10px;
+
+  }
