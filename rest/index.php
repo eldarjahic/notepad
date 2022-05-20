@@ -16,7 +16,7 @@ Flight::register('userDao', 'UserDao');
 //MIDDLEWARE METHOD FOR LOGIN
 Flight::route('/*', function(){
   $path = Flight::request()->url;
-  if($path == '/login') return TRUE;
+  if($path == '/login' || $path == "/docs.json") return TRUE;
   $headers = getallheaders();
   if(@!$headers['Authorization']){
     return FALSE;
@@ -33,6 +33,12 @@ Flight::route('/*', function(){
 
   }
 
+
+});
+Flight::route('GET /docs.json', function(){
+  $openapi = \OpenApi\scan('routes');
+  header('Content-Type: application/json');
+  echo $openapi->toJson();
 
 });
 

@@ -2,6 +2,31 @@
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+/**
+* @OA\Post(
+*     path="/login",
+*     description="Login to the system",
+*     tags={"note"},
+*     @OA\RequestBody(description="Basic user information", required=true,
+*       @OA\MediaType(mediaType="application/json",
+*    			@OA\Schema(
+*    				 @OA\Property(property="email", type="string", example="eldar.jahic@stu.ibu.edu.ba",	description="Email" ),
+*    				 @OA\Property(property="password", type="string", example="1234",	description="Password" )
+*          )
+*       )),
+*     @OA\Response(
+*         response=200,
+*         description="jwt Token on successful response"
+*
+*     ),
+*     @OA\Response(
+*         response="404",
+*         description="Wrong Password | User does not exist"
+*
+*     )
+* )
+*/
+
 Flight::route('POST /login', function(){
 
   $login = Flight::request()->data->getData();
